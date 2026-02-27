@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NSWPF RP Command Portal</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: { gold: '#B8CAE8', navy: '#0b1320', nswblue: '#123a7a' }
+    }
+  }
+}
+</script>
+
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{ --nav-h:56px; }
+
+html,body{font-size:16px;line-height:1.5;height:100%;overflow-x:hidden;}
+body{
+  font-family: Inter, ui-sans-serif, system-ui;
+  background: radial-gradient(1200px 700px at 20% -10%, rgba(0,70,139,.35), transparent 55%),
+              radial-gradient(900px 600px at 80% 0%, rgba(255,206,52,.20), transparent 55%),
+              linear-gradient(180deg, #070a12 0%, #05060b 100%);
+  color:#f4f4f5;
+}
+
+.wrap{max-width:1920px;margin:0 auto;padding:0 18px;}
+
+/* NAV */
+.nav-btn{
+  padding:6px 12px;
+  border-radius:8px;
+  font-weight:600;
+  font-size:14px;
+  color:#a1a1aa;
+  transition:.15s ease;
+}
+.nav-btn:hover{ color:#FFCE34; }
+.nav-btn.active{
+  background:#FFCE34;
+  color:#111;
+}
+
+.dropdown{position:relative;}
+.dropdown-menu{
+  display:none;
+  position:absolute;
+  top:38px;
+  left:0;
+  min-width:240px;
+  background:rgba(24,24,27,.98);
+  border:1px solid rgba(63,63,70,.8);
+  border-radius:12px;
+  padding:8px;
+  box-shadow:0 10px 30px rgba(0,0,0,.6);
+  z-index:100;
+}
+.dropdown-menu button{
+  display:block;
+  width:100%;
+  text-align:left;
+  padding:8px 10px;
+  border-radius:8px;
+  font-size:14px;
+  color:#d4d4d8;
+}
+.dropdown-menu button:hover{
+  background:rgba(255,206,52,.15);
+  color:#FFCE34;
+}
+.dropdown.open .dropdown-menu{display:block}
+
+/* PANEL UPGRADE (STYLE FIX ONLY) */
+.panel{
+  background:linear-gradient(180deg, rgba(24,24,27,.78) 0%, rgba(24,24,27,.55) 100%);
+  border:1px solid rgba(63,63,70,.7);
+  border-radius:14px;
+  padding:22px;
+  box-shadow:0 10px 28px rgba(0,0,0,.45);
+  backdrop-filter:blur(6px);
+;min-width:0;border-radius:22px;}
+
+.panel-header{
+  font-size:19px;
+  font-weight:800;
+  letter-spacing:.02em;
+  margin-bottom:18px;
+  color:#FFCE34;
+  border-bottom:1px solid rgba(63,63,70,.6);
+  padding-bottom:8px;
+}
+
+/* TEXT DENSITY FIX */
+.page p{
+  margin-bottom:6px;
+  line-height:1.45;
+}
+
+.page li{
+  margin-bottom:5px;
+}
+
+.table-clean{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:12px;
+}
+.table-clean th,
+.table-clean td{
+  border-bottom:1px solid rgba(63,63,70,.5);
+  padding:10px 6px;
+  font-size:14px;
+}
+.table-clean tr:last-child td{
+  border-bottom:none;
+}
+
+/* QUICK REF */
+body.quickref-lock{overflow:hidden;}
+.quickref-grid{
+  display:grid;
+  gap:14px;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);
+}
+
+.page{display:none;}
+.page.active{display:block;}
+</style>
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        nswblue: '#B8CAE8',
+        nswdark: '#00053E',
+        nswdark2: '#00468B'
+      }
+    }
+  }
+}
+</script>
+
+<style>
+:root{ --nav-h:56px; }
+
+html,body{
+  font-size:16px;
+  line-height:1.45;
+  height:100%;
+  overflow-x:hidden;
+}
+
+body{
+  font-family: Inter, ui-sans-serif, system-ui;
+  background:
+    radial-gradient(1200px 700px at 20% -10%, rgba(184,202,232,.18), transparent 55%),
+    linear-gradient(180deg, #050713 0%, #03040a 100%);
+  color:#f4f6fb;
+}
+
+.wrap{
+  max-width:1920px;
+  margin:0 auto;
+  padding:0 12px;
+}
+
+/* NAV COLOURS */
+nav{
+  background:#00053E !important;
+  border-bottom:1px solid #00468B !important;
+}
+
+.nav-btn{
+  color:#dbe7ff !important;
+}
+.nav-btn.active{
+  background:#B8CAE8 !important;
+  color:#020617 !important;
+}
+.nav-btn:hover{
+  color:#ffffff !important;
+}
+
+/* DROPDOWNS */
+.dropdown-menu{
+  background:#00053E !important;
+  border:1px solid rgba(184,202,232,.25) !important;
+  border-radius:10px !important;
+  padding:10px !important;
+}
+.dropdown-menu button{
+  padding:10px 12px !important;
+}
+.dropdown-menu button:hover{
+  background:rgba(184,202,232,.12) !important;
+}
+
+/* PANELS */
+.panel{
+  background:linear-gradient(180deg, rgba(12,18,38,.95), rgba(8,12,28,.95)) !important;
+  border:1px solid rgba(184,202,232,.22) !important;
+  border-radius:18px !important;
+  padding:16px !important;
+  min-width:0;
+}
+
+.panel-header{
+  color:#B8CAE8 !important;
+  font-size:17px !important;
+  margin-bottom:10px !important;
+  padding-bottom:6px !important;
+  border-bottom:1px solid rgba(184,202,232,.25) !important;
+}
+
+/* QUICK REF FIT */
+.quickref-grid{
+  gap:10px !important;
+}
+
+#quick .panel{
+  font-size:14px;
+  overflow:hidden !important;
+}
+
+#quick p{ margin-bottom:5px; }
+#quick li{ margin-bottom:4px; }
+
+body.quickref-lock{ overflow:hidden; }
+</style>
+
+</head>
+
+<body class="quickref-lock">
+
+<nav class="h-14 border-b border-zinc-800 bg-[#00053E] flex items-center">
+<div class="wrap flex justify-between items-center w-full">
+
+<div class="font-semibold tracking-wide">NSWPF RP Command Portal</div>
+
+<div class="flex gap-4 items-center text-sm">
+
+<button class="nav-btn active" data-page="quick">Quick Ref</button>
+
+<div class="dropdown">
+<button class="nav-btn dropdown-toggle">Operations ▾</button>
+<div class="dropdown-menu">
+<button data-page="vehicles">Vehicles</button>
+<button data-page="legal">Legal</button>
+<button data-page="scene">Scene</button>
+<button data-page="radio">Radio</button>
+<button data-page="k9">K9</button>
+</div>
+</div>
+
+<div class="dropdown">
+<button class="nav-btn dropdown-toggle">Personnel ▾</button>
+<div class="dropdown-menu">
+<button data-page="ranks">Ranks</button>
+<button data-page="promotions">Promotions</button>
+<button data-page="conduct">Conduct</button>
+</div>
+</div>
+
+<div class="dropdown">
+<button class="nav-btn dropdown-toggle">Administration ▾</button>
+<div class="dropdown-menu">
+<button data-page="equipment">Equipment</button>
+<button data-page="reports">Reports</button>
+<button data-page="bolo">BOLO</button>
+</div>
+</div>
+
+</div>
+</div>
+</nav>
+
+<main class="wrap py-6 space-y-8">
+
+<section id="quick" class="page active">
+
+<div class="quickref-grid" style="height:calc(100vh - var(--nav-h) - 30px);">
+
+<!-- Arrest -->
+<div class="flex flex-col gap-3 h-full min-w-0 min-h-0 overflow-hidden">
+<div class="panel flex flex-col justify-between flex-1 min-h-0">
+<div>
+<div class="panel-header">Arrest Caution</div>
+
+<p>My name is [rank] [name] from the NSW Police Force.</p>
+<p>You are under arrest for [offence].</p>
+<p>You do not have to say or do anything, but anything you say or do may be used as evidence in a court of law.</p>
+<p>You have the right to contact a friend or family member to let them know your whereabouts.</p>
+<p>You also have the right to speak with a lawyer. If you do not have one, one can be appointed to you.</p>
+<p><strong>Do you understand this caution?</strong></p>
+
+</div>
+<p class="text-sm text-zinc-400 mt-4">If no response is received, the caution must be read again.</p>
+</div>
+<div class="panel flex flex-col flex-none">
+  <div class="panel-header">Use of Force &amp; Tackling</div>
+  <div class="text-xs leading-snug space-y-2">
+    <div>
+      <div class="text-[11px] uppercase tracking-wider text-zinc-400">Use of force (quick)</div>
+      <ul class="mt-1 list-disc list-inside text-zinc-200">
+        <li>Start verbal &amp; de-escalate where possible.</li>
+        <li>Use the <b>least force</b> needed; escalate only if resistance/assault increases.</li>
+        <li>Once controlled: <b>cuff</b>, <b>search</b>, provide <b>medical</b> if required.</li>
+      </ul>
+    </div>
+    <div>
+      <div class="text-[11px] uppercase tracking-wider text-zinc-400">Tackling (procedure)</div>
+      <ul class="mt-1 list-disc list-inside text-zinc-200">
+        <li>Call it: <b>“Tackling!”</b> Ensure it’s safe (no traffic/edges).</li>
+        <li>Aim low (hips/legs), control arms, move to cuffs.</li>
+        <li>Update comms: location, status, injuries.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Radio -->
+
+<div class="panel min-w-0 overflow-hidden">
+  <div class="panel-header flex items-center justify-between gap-3">
+    <span>Radio Codes</span>
+    <a href="#radio" class="px-3 py-1 rounded-full border border-gold/30 text-gold text-xs hover:bg-gold/10 transition">Open full page</a>
+  </div>
+
+  <p class="text-gold text-xs tracking-wide uppercase mb-2">Essential 10-Codes</p>
+
+  <div class="grid grid-cols-2 gap-x-8">
+    <div class="space-y-1">
+      <div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-3</span>
+  <span class="flex-1 text-right text-zinc-200">Stop Radio Chatter</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-4</span>
+  <span class="flex-1 text-right text-zinc-200">Acknowledgement</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-7</span>
+  <span class="flex-1 text-right text-zinc-200">Out of Service</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-8</span>
+  <span class="flex-1 text-right text-zinc-200">Back in Service</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-9</span>
+  <span class="flex-1 text-right text-zinc-200">Repeat</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-10</span>
+  <span class="flex-1 text-right text-zinc-200">Fight in Progress</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-12</span>
+  <span class="flex-1 text-right text-zinc-200">Standby</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-13</span>
+  <span class="flex-1 text-right text-zinc-200">OFFICER DOWN (EMERGENCY)</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-14</span>
+  <span class="flex-1 text-right text-zinc-200">Medic Down Emergency</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-20</span>
+  <span class="flex-1 text-right text-zinc-200">Location</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-23</span>
+  <span class="flex-1 text-right text-zinc-200">Arrived on Scene</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-25</span>
+  <span class="flex-1 text-right text-zinc-200">Report in Person</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-31</span>
+  <span class="flex-1 text-right text-zinc-200">Crime in Progress</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-32</span>
+  <span class="flex-1 text-right text-zinc-200">Person with a Gun</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-38</span>
+  <span class="flex-1 text-right text-zinc-200">Traffic Stop</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-41</span>
+  <span class="flex-1 text-right text-zinc-200">On Duty</span>
+</div>
+    </div>
+    <div class="space-y-1">
+      <div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-42</span>
+  <span class="flex-1 text-right text-zinc-200">Off Duty</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-47</span>
+  <span class="flex-1 text-right text-zinc-200">Injured Person</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-50</span>
+  <span class="flex-1 text-right text-zinc-200">Vehicle Accident</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-52</span>
+  <span class="flex-1 text-right text-zinc-200">EMS Needed</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-60</span>
+  <span class="flex-1 text-right text-zinc-200">Carjacking</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-71</span>
+  <span class="flex-1 text-right text-zinc-200">Shots Fired</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-76</span>
+  <span class="flex-1 text-right text-zinc-200">Enroute</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-77</span>
+  <span class="flex-1 text-right text-zinc-200">Need Backup (Non-Emergency)</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-78</span>
+  <span class="flex-1 text-right text-zinc-200">Need Backup (EMERGENCY)</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-80</span>
+  <span class="flex-1 text-right text-zinc-200">Pursuit in Progress</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-90</span>
+  <span class="flex-1 text-right text-zinc-200">Robbery in Progress</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-91</span>
+  <span class="flex-1 text-right text-zinc-200">Transport</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-94</span>
+  <span class="flex-1 text-right text-zinc-200">Reckless Driver</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-95</span>
+  <span class="flex-1 text-right text-zinc-200">Suspect in Custody</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-98</span>
+  <span class="flex-1 text-right text-zinc-200">Jail Break</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">10-99</span>
+  <span class="flex-1 text-right text-zinc-200">Stolen Vehicle</span>
+</div>
+    </div>
+  </div>
+
+  <div class="h-px bg-white/10 my-3"></div>
+
+  <p class="text-gold text-xs tracking-wide uppercase mb-2">Code Response (lights / sirens)</p>
+
+  <div class="grid grid-cols-2 gap-x-8">
+    <div class="space-y-1">
+      <div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">Code 1</span>
+  <span class="flex-1 text-right text-zinc-200">No Lights or Sirens</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">Code 2</span>
+  <span class="flex-1 text-right text-zinc-200">Lights On, No Sirens</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">Code 3</span>
+  <span class="flex-1 text-right text-zinc-200">EMERGENCY (Lights & Sirens)</span>
+</div>
+    </div>
+    <div class="space-y-1">
+      <div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">Code 4</span>
+  <span class="flex-1 text-right text-zinc-200">All Clear</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">Code 6</span>
+  <span class="flex-1 text-right text-zinc-200">Investigating Area</span>
+</div>
+<div class="flex items-center gap-3 text-sm leading-tight">
+  <span class="w-16 shrink-0 font-semibold text-gold tabular-nums">Code 0</span>
+  <span class="flex-1 text-right text-zinc-200">Head Pop</span>
+</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Pursuit -->
+<div class="panel overflow-auto">
+<div class="panel-header">Pursuit Quick Guide</div>
+
+<p class="text-gold text-xs tracking-wide uppercase mb-2">Radio Crib</p>
+<p class="text-sm mb-4 leading-snug">
+"[Callsign], pursuit on [vehicle], traffic [L/M/H], weather [clear/rain], heading [direction] on [road], hostilities [yes/no], requesting backup."
+</p>
+
+<p class="text-gold text-xs tracking-wide uppercase mb-2">Authorisations</p>
+
+<div class="text-sm space-y-2 leading-snug">
+
+<div><strong>0–5 Minutes:</strong> No PITs. No spike strips. Containment / tracking only.</div>
+
+<div><strong>5+ Minutes:</strong> PIT under 100 km/h automatically authorised.</div>
+
+<div><strong>10+ Minutes:</strong> PIT under 175 km/h automatically authorised. Spike strips may be deployed.</div>
+
+<div><strong>Hostile Pursuit (timers void):</strong> Ramming / assisting vehicle / shots fired. PIT under 175 km/h permitted. Spikes / barricades permitted.</div>
+
+</div>
+
+<p class="text-sm mt-4">
+<strong>Only PD Command or Highway may approve PITs, boxes, or spikes.</strong>
+Supervisor approval is not required to initiate a pursuit.
+</p>
+
+<p class="text-gold text-xs tracking-wide uppercase mt-6 mb-2">Primary Unit Priority</p>
+
+<div class="text-sm space-y-1 leading-tight">
+<div>1. Interceptor</div>
+<div>2. Highway Patrol</div>
+<div>3. Raptor</div>
+<div>4. GD and all others</div>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section id="ranks" class="page">
+<div class="panel">
+<div class="panel-header">Rank Structure</div>
+
+<p class="text-gold text-xs tracking-wide uppercase mb-2">Commissioned Officers</p>
+<p>Commissioner</p>
+<p>Deputy Commissioner</p>
+<p>Assistant Commissioner</p>
+<p>Commander</p>
+<p>Chief Superintendent</p>
+<p class="text-gold text-xs tracking-wide uppercase mt-8 mb-2">Non Commissioned Officers</p>
+<p>Senior Sergeant</p>
+<p>Sergeant</p>
+
+<p class="text-gold text-xs tracking-wide uppercase mt-8 mb-2">Junior NCO</p>
+<p>Leading Senior Constable</p>
+<p>Senior Constable</p>
+<p>First Constable</p>
+<p>Constable</p>
+
+<p class="text-gold text-xs tracking-wide uppercase mt-8 mb-2">Probationary</p>
+<p>Probationary Constable</p>
+
+</div>
+</section>
+
+<section id="promotions" class="page">
+  <div class="panel">
+    <div class="panel-header">Promotions</div>
+
+    <p class="text-slate-200 leading-relaxed">
+      Promotions are available to <span class="font-semibold">all ranks</span> once a member has completed their
+      <span class="font-semibold">probationary stage</span>.
+    </p>
+
+    <div class="mt-4 space-y-2 text-slate-200">
+      <p class="text-slate-400 text-sm">Promotions are assessed on:</p>
+      <ul class="list-disc pl-5 space-y-1">
+        <li>Good quality RP and professionalism</li>
+        <li>Activity/attendance and reliability</li>
+        <li>Decision-making and handling of situations</li>
+        <li>Communication, teamwork, and leadership potential</li>
+      </ul>
+    </div>
+
+    <p class="mt-4 text-slate-400 text-sm">
+      Note: Meeting the above does not guarantee promotion — it supports eligibility and consideration.
+    </p>
+  </div>
+</section>
+
+<section id="equipment" class="page">
+<div class="panel">
+<div class="panel-header">Equipment & Weapon Authorisation</div>
+
+<p class="text-gold text-xs tracking-wide uppercase mb-2">Standard Issue (All Officers)</p>
+
+<ul class="list-disc ml-6 text-sm space-y-1">
+<li>Police Radio</li>
+<li>10x Body Armour Vests</li>
+<li>Flashlight</li>
+<li>Nightstick</li>
+<li>Taser</li>
+<li>Service Pistol</li>
+<li>300x 9mm Ammunition</li>
+</ul>
+
+<p class="text-gold text-xs tracking-wide uppercase mt-8 mb-2">Weapon Authorisation by Rank</p>
+
+<table class="table-clean">
+<tr>
+<th>Rank Tier</th>
+<th>Authorised Weapons</th>
+</tr>
+<tr>
+<td>Junior NCO</td>
+<td>Pistol</td>
+</tr>
+<tr>
+<td>NCO</td>
+<td>Pistol + SMG</td>
+</tr>
+<tr>
+<td>Commissioned Officers</td>
+<td>Pistol + SMG + Rifle + Shotgun</td>
+</tr>
+</table>
+
+<p class="mt-6 text-sm">
+High Command approval is required for any out-of-rank weapon usage.
+Tasers are considered non-lethal compliance tools.
+EMS must remove taser prongs.
+</p>
+
+</div>
+</section>
+
+<section id="vehicles" class="page">
+<div class="panel">
+<div class="panel-header">Vehicle & Division Policy</div>
+
+<ul class="list-disc ml-6 text-sm space-y-2">
+<li>Officers must operate vehicles assigned to their division.</li>
+<li>Highway Patrol vehicles require Highway Command certification.</li>
+<li>Bike Patrol requires certification and a minimum of 4 officers on duty.</li>
+<li>PolAir requires certification and a minimum of 3 officers on duty.</li>
+<li>Improper vehicle usage may result in disciplinary action.</li>
+</ul>
+
+</div>
+</section>
+
+<section id="legal" class="page">
+<div class="panel">
+<div class="panel-header">Legal Standards</div>
+
+<p class="text-gold text-xs tracking-wide uppercase mb-2">Probable Cause</p>
+<p>
+A reasonable belief, supported by facts and circumstances, that a crime has been committed.
+</p>
+
+<p class="text-gold text-xs tracking-wide uppercase mt-8 mb-2">Reasonable Suspicion</p>
+<p>
+Specific and articulable facts which indicate that criminal activity may be occurring.
+</p>
+
+<p class="text-gold text-xs tracking-wide uppercase mt-8 mb-2">Search Procedures</p>
+<ul class="list-disc ml-6 text-sm space-y-1">
+<li>All suspects must be searched upon arrest.</li>
+<li>Suspects must be searched again post-hospital release.</li>
+</ul>
+
+<p class="text-gold text-xs tracking-wide uppercase mt-8 mb-2">Officer Discretion</p>
+<p>
+Officers may exercise discretion in minor cases and issue citations or warnings where appropriate.
+</p>
+
+</div>
+</section>
+
+<section id="scene" class="page">
+<div class="panel">
+<div class="panel-header">Scene Management</div>
+
+<ul class="list-disc ml-6 text-sm space-y-2">
+<li>Upon arrival, officers must relay suspects, weapons, hostages, and vehicle descriptions.</li>
+<li>A minimum of 3 officers is required to authorise a breach.</li>
+<li>The highest ranking officer on scene authorises breach decisions.</li>
+<li>Officers must not identify themselves by voice during tactical operations.</li>
+<li>Clear and controlled communication must be maintained at all times.</li>
+</ul>
+
+</div>
+</section>
+
+<section id="radio" class="page">
+<div class="panel">
+<div class="panel-header">Radio Protocol</div>
+
+<ul class="list-disc ml-6 text-sm space-y-2">
+<li>10-3 must be used to stop radio chatter during priority incidents.</li>
+<li>EMS must stage until Code 4 is declared.</li>
+<li>Officers are not to self-attach to pursuits without authorisation.</li>
+<li>Clear callsigns must be used at all times.</li>
+<li>Radio discipline is mandatory during active scenes and pursuits.</li>
+</ul>
+
+</div>
+</section>
+
+<section id="reports" class="page">
+<div class="panel">
+<div class="panel-header">MDT & Reporting</div>
+
+<ul class="list-disc ml-6 text-sm space-y-2">
+<li>All officers involved must be listed.</li>
+<li>All suspects and civilians must be documented.</li>
+<li>Evidence must be properly logged.</li>
+<li>Weapons and confiscated items must be recorded.</li>
+<li>No additional charges may be added after sentencing.</li>
+<li>Maximum sentence: 60 months (High Command approval required).</li>
+<li>Warrants must be filed within 7 days.</li>
+<li>Search warrants are restricted to Detectives and AFP.</li>
+</ul>
+
+</div>
+</section>
+
+<section id="bolo" class="page">
+<div class="panel">
+<div class="panel-header">BOLO System</div>
+
+<p class="text-gold text-xs tracking-wide uppercase mb-2">Person BOLO</p>
+<p>Name, Description, Charges, Last Seen Location, Threat Level.</p>
+
+<p class="text-gold text-xs tracking-wide uppercase mt-8 mb-2">Vehicle BOLO</p>
+<p>Plate Number, Model, Colour, Occupants, Associated Crimes.</p>
+
+<p class="text-gold text-xs tracking-wide uppercase mt-8 mb-2">Property BOLO</p>
+<p>Item Description, Serial Number, Owner Information.</p>
+
+</div>
+</section>
+
+<section id="conduct" class="page">
+<div class="panel">
+<div class="panel-header">Professional Conduct & Strike System</div>
+
+<ul class="list-disc ml-6 text-sm space-y-2">
+<li>Chain of command must be respected at all times.</li>
+<li>A strike remains active for 2 weeks.</li>
+<li>A further breach during an active strike may result in suspension.</li>
+<li>Officers must maintain professionalism at all times.</li>
+<li>Bodycam and dashcam usage is mandatory.</li>
+<li>Suspects must be transported to PD immediately unless unsafe.</li>
+<li>GSR testing is permitted during shots fired investigations.</li>
+</ul>
+
+</div>
+</section>
+
+
+<section id="k9" class="page">
+  <div class="panel">
+    <div class="panel-header">K-9 Unit Standard Operating Procedures</div>
+
+    <p class="text-gold text-xs tracking-wide uppercase mb-2">Purpose</p>
+    <p>
+      This SOP establishes guidelines for the deployment, care, handling, training,
+      and documentation related to police K-9 units.
+    </p>
+
+    <p class="text-gold text-xs tracking-wide uppercase mt-8 mb-2">Roles & Responsibilities</p>
+    <ul class="list-disc ml-6 text-sm space-y-1">
+      <li><strong>K-9 Handler:</strong> Maintains control of the K-9, ensures care, health checks, training, and completes deployment documentation.</li>
+      <li><strong>K-9 Supervisor:</strong> Oversees assignments and training, approves deployments, reviews reports.</li>
+      <li><strong>Veterinary Support:</strong> Provides medical care and maintains vaccination and health records.</li>
+    </ul>
+
+    <p class="text-gold text-xs tracking-wide uppercase mt-8 mb-2">Training Requirements</p>
+    <ul class="list-disc ml-6 text-sm space-y-1">
+      <li>Certified initial training</li>
+      <li>Ongoing weekly/monthly training sessions</li>
+      <li>Annual recertification</li>
+      <li>Maintenance of training records</li>
+    </ul>
+
+    <p class="text-gold text-xs tracking-wide uppercase mt-8 mb-2">K-9 Care & Welfare</p>
+    <ul class="list-disc ml-6 text-sm space-y-1">
+      <li>Daily feeding and hydration</li>
+      <li>Safe kennel and housing arrangements</li>
+      <li>Regular exercise requirements</li>
+      <li>Reporting injuries or illness immediately</li>
+      <li>Climate-controlled transport at all times</li>
+    </ul>
+
+    <p class="text-gold text-xs tracking-wide uppercase mt-8 mb-2">Deployment Guidelines</p>
+    <ul class="list-disc ml-6 text-sm space-y-1">
+      <li>Handler supervision is mandatory</li>
+      <li>Consistent commands must be used</li>
+      <li>Legal justification is required prior to deployment</li>
+      <li>K-9s may be used to prevent escape, protect officers, or stop threats</li>
+      <li>Verbal warnings should be given when feasible</li>
+      <li>Detection dogs require lawful authority and documented alerts</li>
+    </ul>
+
+    <p class="text-gold text-xs tracking-wide uppercase mt-8 mb-2">Use of Force</p>
+    <ul class="list-disc ml-6 text-sm space-y-1">
+      <li>K-9 deployment is considered a use of force</li>
+      <li>Medical assistance must be provided after any bite</li>
+      <li>All deployments are subject to supervisor review</li>
+    </ul>
+
+    <p class="text-gold text-xs tracking-wide uppercase mt-8 mb-2">Recordkeeping</p>
+    <ul class="list-disc ml-6 text-sm space-y-1">
+      <li>Deployment logs</li>
+      <li>Training logs</li>
+      <li>Veterinary records</li>
+      <li>Bite / use-of-force reports</li>
+      <li>Equipment maintenance logs</li>
+    </ul>
+
+    <p class="text-gold text-xs tracking-wide uppercase mt-8 mb-2">Equipment Standards</p>
+    <ul class="list-disc ml-6 text-sm space-y-1">
+      <li>Approved harnesses, leashes, and muzzles</li>
+      <li>Ventilated vehicle kennels</li>
+      <li>Tracking and detection equipment</li>
+      <li>First aid kits</li>
+    </ul>
+
+    <p class="text-gold text-xs tracking-wide uppercase mt-8 mb-2">Public Demonstrations</p>
+    <ul class="list-disc ml-6 text-sm space-y-1">
+      <li>Command approval required</li>
+      <li>Safety perimeters must be established</li>
+      <li>No public participation in apprehension demonstrations</li>
+    </ul>
+
+    <p class="text-gold text-xs tracking-wide uppercase mt-8 mb-2">Retirement & Reassignment</p>
+    <ul class="list-disc ml-6 text-sm space-y-1">
+      <li>Determined by health and performance</li>
+      <li>Adoption procedures for handlers or families</li>
+      <li>Ownership transfer must be documented</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<script>
+const navButtons=document.querySelectorAll('[data-page]');
+const pages=document.querySelectorAll('.page');
+
+navButtons.forEach(btn=>{
+btn.addEventListener('click',()=>{
+navButtons.forEach(b=>b.classList.remove('active'));
+pages.forEach(p=>p.classList.remove('active'));
+btn.classList.add('active');
+document.getElementById(btn.dataset.page).classList.add('active');
+document.body.classList.toggle('quickref-lock', btn.dataset.page==="quick");
+});
+});
+
+const dropdowns=document.querySelectorAll('.dropdown');
+const toggles=document.querySelectorAll('.dropdown-toggle');
+
+toggles.forEach(toggle=>{
+toggle.addEventListener('click',e=>{
+e.stopPropagation();
+dropdowns.forEach(d=>d.classList.remove('open'));
+toggle.parentElement.classList.toggle('open');
+});
+});
+
+document.addEventListener('click',()=>{
+dropdowns.forEach(d=>d.classList.remove('open'));
+});
+</script>
+
+</body>
+</html>
